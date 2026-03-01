@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class UseCase9PalindromeCheckerApp {
+public class UseCase10PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
@@ -9,31 +9,33 @@ public class UseCase9PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        boolean isPalindrome = isPalindrome(input, 0, input.length() - 1);
+        // Normalize string:
+        // 1. Remove all non-alphanumeric characters (including spaces)
+        // 2. Convert to lowercase
+        String normalized = input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+        boolean isPalindrome = isPalindrome(normalized, 0, normalized.length() - 1);
 
         if (isPalindrome) {
-            System.out.println(input + " is a Palindrome.");
+            System.out.println("Palindrome (ignoring spaces & case).");
         } else {
-            System.out.println(input + " is NOT a Palindrome.");
+            System.out.println("NOT a Palindrome (ignoring spaces & case).");
         }
 
         scanner.close();
     }
 
-    // Recursive method
+    // Reuse recursive logic
     public static boolean isPalindrome(String str, int start, int end) {
 
-        // Base condition: if pointers cross or meet
         if (start >= end) {
-            return true;
+            return true;  // Base condition
         }
 
-        // If characters do not match
         if (str.charAt(start) != str.charAt(end)) {
             return false;
         }
 
-        // Recursive call for inner substring
         return isPalindrome(str, start + 1, end - 1);
     }
 }
