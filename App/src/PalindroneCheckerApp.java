@@ -1,17 +1,6 @@
 import java.util.Scanner;
 
-public class UseCase8PalindromeCheckerApp {
-
-    // Node class for Singly Linked List
-    static class Node {
-        char data;
-        Node next;
-
-        Node(char data) {
-            this.data = data;
-            this.next = null;
-        }
-    }
+public class UseCase9PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
@@ -20,21 +9,7 @@ public class UseCase8PalindromeCheckerApp {
         System.out.print("Enter a string: ");
         String input = scanner.nextLine();
 
-        if (input.length() == 0) {
-            System.out.println("Empty string is a Palindrome.");
-            return;
-        }
-
-        // Convert string to linked list
-        Node head = new Node(input.charAt(0));
-        Node current = head;
-
-        for (int i = 1; i < input.length(); i++) {
-            current.next = new Node(input.charAt(i));
-            current = current.next;
-        }
-
-        boolean isPalindrome = isPalindrome(head);
+        boolean isPalindrome = isPalindrome(input, 0, input.length() - 1);
 
         if (isPalindrome) {
             System.out.println(input + " is a Palindrome.");
@@ -45,51 +20,20 @@ public class UseCase8PalindromeCheckerApp {
         scanner.close();
     }
 
-    // Method to check palindrome using fast & slow pointer
-    public static boolean isPalindrome(Node head) {
+    // Recursive method
+    public static boolean isPalindrome(String str, int start, int end) {
 
-        if (head == null || head.next == null)
+        // Base condition: if pointers cross or meet
+        if (start >= end) {
             return true;
-
-        Node slow = head;
-        Node fast = head;
-
-        // Find middle using fast and slow pointers
-        while (fast.next != null && fast.next.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
         }
 
-        // Reverse second half
-        Node secondHalf = reverse(slow.next);
-
-        Node firstHalf = head;
-
-        // Compare both halves
-        while (secondHalf != null) {
-            if (firstHalf.data != secondHalf.data) {
-                return false;
-            }
-            firstHalf = firstHalf.next;
-            secondHalf = secondHalf.next;
+        // If characters do not match
+        if (str.charAt(start) != str.charAt(end)) {
+            return false;
         }
 
-        return true;
-    }
-
-    // Reverse linked list
-    public static Node reverse(Node head) {
-
-        Node prev = null;
-        Node current = head;
-
-        while (current != null) {
-            Node nextNode = current.next;
-            current.next = prev;
-            prev = current;
-            current = nextNode;
-        }
-
-        return prev;
+        // Recursive call for inner substring
+        return isPalindrome(str, start + 1, end - 1);
     }
 }
