@@ -1,111 +1,87 @@
-import java.util.Scanner;
 import java.util.Stack;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-/**
- * =========================================================
- * MAIN CLASS - UseCase12PalindromeCheckerApp
- * =========================================================
- *
- * Use Case 12: Strategy Pattern for Palindrome Algorithms
- *
- * Demonstrates dynamic selection of palindrome
- * algorithm using Strategy Design Pattern.
- */
-
-public class UseCase12PalindromeCheckerApp {
+public class UseCase13PalindromePerformanceApp {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        String input = "A man a plan a canal Panama";
 
-        System.out.println("Choose Algorithm:");
-        System.out.println("1. Stack Strategy (LIFO)");
-        System.out.println("2. Deque Strategy (Two-Pointer)");
-        System.out.print("Enter choice: ");
+        // Normalize once for fair comparison
+        String normalized = input.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
 
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        // -------------------------------
+        // 1. Stack Approach
+        // -------------------------------
+        long startStack = System.nanoTime();
+        boolean stackResult = stackPalindrome(normalized);
+        long endStack = System.nanoTime();
+        long stackTime = endStack - startStack;
 
-        PalindromeStrategy strategy;
+        // -------------------------------
+        // 2. Deque Approach
+        // -------------------------------
+        long startDeque = System.nanoTime();
+        boolean dequeResult = dequePalindrome(normalized);
+        long endDeque = System.nanoTime();
+        long dequeTime = endDeque - startDeque;
 
-        if (choice == 1) {
-            strategy = new StackStrategy();
-        } else {
-            strategy = new DequeStrategy();
-        }
+        // -------------------------------
+        // 3. Two Pointer (Optimal)
+        // -------------------------------
+        long startTwoPointer = System.nanoTime();
+        boolean twoPointerResult = twoPointerPalindrome(normalized);
+        long endTwoPointer = System.nanoTime();
+        long twoPointerTime = endTwoPointer - startTwoPointer;
 
-        System.out.print("Input: ");
-        String input = scanner.nextLine();
-
-        boolean result = strategy.check(input);
-
-        System.out.println("Is Palindrome? : " + result);
-
-        scanner.close();
+        // Display Results
+        System.out.println("Input: " + input);
+        System.out.println("-----------------------------------");
+        System.out.println("Stack Result       : " + stackResult + " | Time: " + stackTime + " ns");
+        System.out.println("Deque Result       : " + dequeResult + " | Time: " + dequeTime + " ns");
+        System.out.println("Two Pointer Result : " + twoPointerResult + " | Time: " + twoPointerTime + " ns");
     }
-}
 
-/**
- * =========================================================
- * INTERFACE - PalindromeStrategy
- * =========================================================
- */
-interface PalindromeStrategy {
-    boolean check(String input);
-}
-
-/**
- * =========================================================
- * CLASS - StackStrategy
- * =========================================================
- * Uses LIFO principle to validate palindrome.
- */
-class StackStrategy implements PalindromeStrategy {
-
-    @Override
-    public boolean check(String input) {
-
+    // Stack-based approach
+    public static boolean stackPalindrome(String input) {
         Stack<Character> stack = new Stack<>();
-
         for (char c : input.toCharArray()) {
             stack.push(c);
         }
-
         for (char c : input.toCharArray()) {
             if (c != stack.pop()) {
                 return false;
             }
         }
-
         return true;
     }
-}
 
-/**
- * =========================================================
- * CLASS - DequeStrategy
- * =========================================================
- * Uses front & rear comparison.
- */
-class DequeStrategy implements PalindromeStrategy {
-
-    @Override
-    public boolean check(String input) {
-
+    // Deque-based approach
+    public static boolean dequePalindrome(String input) {
         Deque<Character> deque = new ArrayDeque<>();
-
         for (char c : input.toCharArray()) {
             deque.addLast(c);
         }
-
         while (deque.size() > 1) {
             if (deque.removeFirst() != deque.removeLast()) {
                 return false;
             }
         }
+        return true;
+    }
 
+    // Two-pointer approach (most efficient)
+    public static boolean twoPointerPalindrome(String input) {
+        int start = 0;
+        int end = input.length() - 1;
+        while (start < end) {
+            if (input.charAt(start) != input.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
         return true;
     }
 }
